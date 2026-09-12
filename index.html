@@ -30,6 +30,7 @@
       font-size: 0.82rem; font-weight: 600; padding: 7px 14px; border-radius: 6px; cursor: pointer; white-space: nowrap;
       transition: all 0.2s ease;
     }
+    .tab-btn:hover { border-color: var(--accent); color: var(--text); }
     .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
     .btn-action { background: #1e293b; border: 1px dashed var(--muted); color: var(--text); padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
     .btn-action:hover { border-color: var(--accent); color: var(--accent); }
@@ -100,11 +101,12 @@
             <th>FTM/A</th>
             <th>REB</th>
             <th>AST</th>
+            <th>Stls</th>
             <th>FTO</th>
-            <th>BAA</th>
-            <th>SAW</th>
+            <th>SAA</th>
+            <th>SAM</th>
+            <th>Drn Fls</th>
             <th>Fouls</th>
-            <th>Own Pts</th>
             <th>+/-</th>
           </tr>
         </thead>
@@ -116,7 +118,7 @@
       <!-- Quick JSON Import -->
       <div class="panel-box">
         <div class="panel-title">📥 Quick Import Game JSON (From Chat)</div>
-        <p style="color: var(--muted); font-size: 0.75rem; margin-bottom: 8px;">When you share a screenshot in chat, paste the returned JSON snippet here to import and save directly to Drive:</p>
+        <p style="color: var(--muted); font-size: 0.75rem; margin-bottom: 8px;">Whenever you share game stats in chat, paste the returned JSON snippet here to import and save directly to Drive:</p>
         <textarea id="import-json-box" class="json-input" placeholder='Paste JSON game snippet here...'></textarea>
         <button class="submit-btn" onclick="importJsonGame()">Import Game & Sync</button>
       </div>
@@ -128,29 +130,30 @@
           <div class="form-grid">
             <div class="form-group"><label>Date</label><input type="date" id="g-date" required /></div>
             <div class="form-group"><label>Game #</label><input type="number" id="g-num" placeholder="1" /></div>
-            <div class="form-group"><label>Opponent</label><input type="text" id="g-opp" placeholder="Torrington" required /></div>
+            <div class="form-group"><label>Opponent</label><input type="text" id="g-opp" placeholder="Career" required /></div>
             <div class="form-group">
               <label>Result</label>
               <select id="g-res"><option value="W">W</option><option value="L">L</option></select>
             </div>
-            <div class="form-group"><label>Score</label><input type="text" id="g-score" placeholder="62-58" /></div>
-            <div class="form-group"><label>Minutes</label><input type="number" id="g-min" placeholder="24" /></div>
-            <div class="form-group"><label>Points</label><input type="number" id="g-pts" placeholder="14" required /></div>
-            <div class="form-group"><label>2PM</label><input type="number" id="g-2pm" placeholder="3" /></div>
-            <div class="form-group"><label>2PA</label><input type="number" id="g-2pa" placeholder="6" /></div>
-            <div class="form-group"><label>3PM</label><input type="number" id="g-3pm" placeholder="1" /></div>
-            <div class="form-group"><label>3PA</label><input type="number" id="g-3pa" placeholder="3" /></div>
+            <div class="form-group"><label>Score</label><input type="text" id="g-score" placeholder="60-50" /></div>
+            <div class="form-group"><label>Minutes</label><input type="number" id="g-min" placeholder="36" /></div>
+            <div class="form-group"><label>Points</label><input type="number" id="g-pts" placeholder="4" required /></div>
+            <div class="form-group"><label>2PM</label><input type="number" id="g-2pm" placeholder="1" /></div>
+            <div class="form-group"><label>2PA</label><input type="number" id="g-2pa" placeholder="1" /></div>
+            <div class="form-group"><label>3PM</label><input type="number" id="g-3pm" placeholder="0" /></div>
+            <div class="form-group"><label>3PA</label><input type="number" id="g-3pa" placeholder="0" /></div>
             <div class="form-group"><label>FTM</label><input type="number" id="g-ftm" placeholder="2" /></div>
             <div class="form-group"><label>FTA</label><input type="number" id="g-fta" placeholder="2" /></div>
-            <div class="form-group"><label>Shooting Fouls</label><input type="number" id="g-fouls-drawn" placeholder="2" /></div>
-            <div class="form-group"><label>Rebounds</label><input type="number" id="g-reb" placeholder="5" /></div>
-            <div class="form-group"><label>Assists</label><input type="number" id="g-ast" placeholder="4" /></div>
-            <div class="form-group"><label>FTO</label><input type="number" id="g-fto" placeholder="0" /></div>
-            <div class="form-group"><label>BAA</label><input type="number" id="g-baa" placeholder="0" /></div>
-            <div class="form-group"><label>SAW</label><input type="number" id="g-saw" placeholder="0" /></div>
-            <div class="form-group"><label>Fouls</label><input type="number" id="g-fouls" placeholder="1" /></div>
-            <div class="form-group"><label>Own Pts</label><input type="number" id="g-ownpts" placeholder="0" /></div>
-            <div class="form-group"><label>+/-</label><input type="text" id="g-pm" placeholder="+6" /></div>
+            <div class="form-group"><label>Shooting Fouls (Trips)</label><input type="number" id="g-fouls-drawn" placeholder="1" /></div>
+            <div class="form-group"><label>Rebounds</label><input type="number" id="g-reb" placeholder="3" /></div>
+            <div class="form-group"><label>Assists</label><input type="number" id="g-ast" placeholder="0" /></div>
+            <div class="form-group"><label>Stls</label><input type="number" id="g-stls" placeholder="2" /></div>
+            <div class="form-group"><label>FTO</label><input type="number" id="g-fto" placeholder="3" /></div>
+            <div class="form-group"><label>SAA</label><input type="number" id="g-saa" placeholder="0" /></div>
+            <div class="form-group"><label>SAM</label><input type="number" id="g-sam" placeholder="4" /></div>
+            <div class="form-group"><label>Drn Fls</label><input type="number" id="g-drnfls" placeholder="2" /></div>
+            <div class="form-group"><label>Fouls</label><input type="number" id="g-fouls" placeholder="0" /></div>
+            <div class="form-group"><label>+/-</label><input type="text" id="g-pm" placeholder="-14" /></div>
           </div>
           <button type="submit" class="submit-btn">Save Game & Sync to Drive</button>
         </form>
@@ -232,17 +235,18 @@
       tbody.innerHTML = '';
 
       if (games.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="19" class="empty-state">No games logged yet for this season/league.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="20" class="empty-state">No games logged yet for this season/league.</td></tr>`;
         document.getElementById('stats-summary').innerHTML = '';
         return;
       }
 
       let t = {
         games: games.length,
-        pts: 0, reb: 0, ast: 0, min: 0, plusMinus: 0,
+        pts: 0, reb: 0, ast: 0, stls: 0, fto: 0, min: 0, plusMinus: 0,
         twoPm: 0, twoPa: 0,
         threePm: 0, threePa: 0,
         ftm: 0, fta: 0,
+        drnFls: 0,
         trueShots: 0,
         gamesHitGoal: 0
       };
@@ -251,6 +255,8 @@
         const pts = Number(g.pts) || 0;
         const reb = Number(g.reb) || 0;
         const ast = Number(g.ast) || 0;
+        const stls = Number(g.stls) || 0;
+        const fto = Number(g.fto) || 0;
         const min = Number(g.min) || 0;
         const twoPm = Number(g.twoPm) || 0;
         const twoPa = Number(g.twoPa) || 0;
@@ -258,12 +264,15 @@
         const threePa = Number(g.threePa) || 0;
         const ftm = Number(g.ftm) || 0;
         const fta = Number(g.fta) || 0;
+        const drnFls = Number(g.drnFls || g.drawnFouls) || 0;
         const pm = Number(String(g.plusMinus || 0).replace('+', '')) || 0;
         const trueShots = Number(g.trueShots) || 0;
 
         t.pts += pts;
         t.reb += reb;
         t.ast += ast;
+        t.stls += stls;
+        t.fto += fto;
         t.min += min;
         t.twoPm += twoPm;
         t.twoPa += twoPa;
@@ -271,6 +280,7 @@
         t.threePa += threePa;
         t.ftm += ftm;
         t.fta += fta;
+        t.drnFls += drnFls;
         t.plusMinus += pm;
         t.trueShots += trueShots;
         if (trueShots >= 8) t.gamesHitGoal++;
@@ -290,11 +300,12 @@
           <td>${ftm}/${fta}</td>
           <td>${reb}</td>
           <td>${ast}</td>
-          <td>${g.fto || 0}</td>
-          <td>${g.baa || 0}</td>
-          <td>${g.saw || 0}</td>
+          <td>${stls}</td>
+          <td>${fto}</td>
+          <td>${g.saa !== undefined ? g.saa : 0}</td>
+          <td>${g.sam !== undefined ? g.sam : 0}</td>
+          <td>${drnFls}</td>
           <td>${g.fouls || 0}</td>
-          <td>${g.ownPts || 0}</td>
           <td>${g.plusMinus || '0'}</td>
         `;
         tbody.appendChild(tr);
@@ -320,6 +331,8 @@
         <div class="stat-card"><div class="label">FT%</div><div class="val">${ftPct}</div></div>
         <div class="stat-card"><div class="label">RPG</div><div class="val">${(t.reb / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">APG</div><div class="val">${(t.ast / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">SPG</div><div class="val">${(t.stls / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">FTO/G</div><div class="val">${(t.fto / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">MPG</div><div class="val">${(t.min / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">Avg +/-</div><div class="val">${(t.plusMinus / n).toFixed(1)}</div></div>
       `;
@@ -360,11 +373,12 @@
         trueShots: twoPa + threePa + foulsDrawn,
         reb: Number(document.getElementById('g-reb').value) || 0,
         ast: Number(document.getElementById('g-ast').value) || 0,
+        stls: Number(document.getElementById('g-stls').value) || 0,
         fto: Number(document.getElementById('g-fto').value) || 0,
-        baa: Number(document.getElementById('g-baa').value) || 0,
-        saw: Number(document.getElementById('g-saw').value) || 0,
+        saa: Number(document.getElementById('g-saa').value) || 0,
+        sam: Number(document.getElementById('g-sam').value) || 0,
+        drnFls: Number(document.getElementById('g-drnfls').value) || 0,
         fouls: Number(document.getElementById('g-fouls').value) || 0,
-        ownPts: Number(document.getElementById('g-ownpts').value) || 0,
         plusMinus: document.getElementById('g-pm').value || "0"
       };
 
