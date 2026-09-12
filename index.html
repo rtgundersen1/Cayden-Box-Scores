@@ -19,35 +19,40 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 16px; }
-    .container { max-width: 1450px; margin: 0 auto; }
+    .container { max-width: 1400px; margin: 0 auto; }
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
     h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
     .status-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
-    
-    .tabs-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px; overflow-x: auto; }
-    .tab-btn {
-      background: var(--card); border: 1px solid var(--border); color: var(--muted);
-      font-size: 0.82rem; font-weight: 600; padding: 7px 14px; border-radius: 6px; cursor: pointer; white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-    .tab-btn:hover { border-color: var(--accent); color: var(--text); }
-    .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .btn-action { background: #1e293b; border: 1px dashed var(--muted); color: var(--text); padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
-    .btn-action:hover { border-color: var(--accent); color: var(--accent); }
 
-    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); gap: 8px; margin-bottom: 18px; }
+    /* Tabs & Tab Toolbar */
+    .tabs-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+    .tabs-list { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+    .tab-btn {
+      background: var(--card); border: 1px solid var(--border); border-bottom: none; color: var(--muted); padding: 8px 16px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 0.85rem; font-weight: 600; white-space: nowrap;
+    }
+    .tab-btn.active { background: #1e293b; color: #fff; border-color: var(--accent); }
+    .tab-btn:hover { color: #fff; }
+    .tab-controls { display: flex; gap: 6px; padding-bottom: 4px; }
+    .tool-btn {
+      background: #0f172a; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600;
+    }
+    .tool-btn:hover { color: #fff; border-color: var(--muted); }
+    .tool-btn.danger:hover { color: var(--red); border-color: var(--red); }
+
+    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 18px; }
     .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 6px; text-align: center; }
     .stat-card .val { font-size: 1.25rem; font-weight: 700; color: #fff; margin-top: 2px; }
     .stat-card .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
 
     .table-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; margin-bottom: 24px; }
     table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.78rem; white-space: nowrap; }
-    th { background: var(--header-bg); color: var(--muted); padding: 10px 7px; font-weight: 600; border-bottom: 1px solid var(--border); }
-    td { padding: 8px 7px; border-bottom: 1px solid var(--border); }
+    th { background: var(--header-bg); color: var(--muted); padding: 10px 8px; font-weight: 600; border-bottom: 1px solid var(--border); }
+    td { padding: 8px; border-bottom: 1px solid var(--border); }
     tr:hover { background: var(--card-hover); }
-    .target-met { color: var(--green); font-weight: 700; }
-    .win { color: var(--green); font-weight: 600; }
-    .loss { color: var(--red); font-weight: 600; }
+    .highlight { color: var(--accent); font-weight: 700; }
+    .green { color: var(--green); font-weight: 700; }
+    .btn-del { background: transparent; border: 1px solid var(--red); color: var(--red); border-radius: 4px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; }
+    .btn-del:hover { background: var(--red); color: #fff; }
     .empty-state { padding: 30px; color: var(--muted); text-align: center; }
 
     .panels-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
@@ -56,14 +61,14 @@
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
     .form-group label { display: block; font-size: 0.65rem; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; font-weight: 600; }
     .form-group input, .form-group select {
-      width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 0.8rem; outline: none;
+      width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 7px 8px; border-radius: 4px; font-size: 0.82rem; outline: none;
     }
     .submit-btn {
       margin-top: 14px; background: var(--accent); border: none; color: #fff; padding: 9px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
     }
     .submit-btn:hover { opacity: 0.9; }
     textarea.json-input {
-      width: 100%; height: 90px; background: #0f172a; border: 1px solid var(--border); color: #38bdf8; font-family: monospace; font-size: 0.78rem; padding: 8px; border-radius: 6px; outline: none;
+      width: 100%; height: 80px; background: #0f172a; border: 1px solid var(--border); color: #38bdf8; font-family: monospace; font-size: 0.78rem; padding: 8px; border-radius: 6px; outline: none;
     }
   </style>
 </head>
@@ -71,89 +76,90 @@
   <div class="container">
     <header>
       <div>
-        <h1>Cayden's Basketball Hub</h1>
-        <p style="color: var(--muted); font-size: 0.8rem; margin-top: 2px;">Shot Assertiveness (≥8 Goal), Sheet Columns & Drive Sync</p>
+        <h1 id="app-heading">Cayden's Basketball Hub</h1>
+        <p style="color: var(--muted); font-size: 0.8rem; margin-top: 2px;">Box Scores & Performance Tracking</p>
       </div>
-      <span class="status-badge" id="sync-status">Connecting...</span>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <span class="status-badge" id="sync-status">Connecting...</span>
+        <button onclick="clearAllCache()" class="tool-btn danger">Wipe Local Cache</button>
+      </div>
     </header>
 
-    <div class="tabs-wrapper">
-      <div id="tab-bar" style="display: flex; gap: 8px;"></div>
-      <button class="btn-action" onclick="addNewSeasonPrompt()">+ New Season/League</button>
+    <!-- Season Tabs Bar & Inline Tab Controls -->
+    <div class="tabs-bar">
+      <div class="tabs-list" id="tabs-list"></div>
+      <div class="tab-controls">
+        <button class="tool-btn" onclick="renameCurrentTab()">✏️ Rename Tab</button>
+        <button class="tool-btn" onclick="addNewTab()">➕ New Tab</button>
+        <button class="tool-btn danger" onclick="deleteCurrentTab()">🗑️ Delete Tab</button>
+      </div>
     </div>
 
+    <!-- Active Season Stat Summary Cards -->
     <div class="stats-summary" id="stats-summary"></div>
 
+    <!-- Games Table -->
     <div class="table-box">
       <table>
         <thead>
           <tr>
             <th>Date</th>
-            <th>G#</th>
             <th>Opponent</th>
             <th>W/L</th>
             <th>Score</th>
             <th>MIN</th>
             <th>PTS</th>
-            <th>Assert (≥8)</th>
-            <th>2PM/A</th>
-            <th>3PM/A</th>
-            <th>FTM/A</th>
             <th>REB</th>
             <th>AST</th>
-            <th>Stls</th>
+            <th>STL</th>
             <th>FTO</th>
-            <th>SAA</th>
-            <th>SAM</th>
-            <th>Drn Fls</th>
-            <th>Fouls</th>
+            <th>2PM-A</th>
+            <th>3PM-A</th>
+            <th>FTM-A</th>
+            <th>True Shots</th>
             <th>+/-</th>
+            <th>Action</th>
           </tr>
         </thead>
-        <tbody id="stats-body"></tbody>
+        <tbody id="games-body"></tbody>
       </table>
     </div>
 
     <div class="panels-grid">
-      <!-- Quick JSON Import -->
+      <!-- Quick JSON Import for Active Tab -->
       <div class="panel-box">
-        <div class="panel-title">📥 Quick Import Game JSON (From Chat)</div>
-        <p style="color: var(--muted); font-size: 0.75rem; margin-bottom: 8px;">Whenever you share game stats in chat, paste the returned JSON snippet here to import and save directly to Drive:</p>
-        <textarea id="import-json-box" class="json-input" placeholder='Paste JSON game snippet here...'></textarea>
-        <button class="submit-btn" onclick="importJsonGame()">Import Game & Sync</button>
+        <div class="panel-title">📥 Quick Import Game JSON (Current Tab)</div>
+        <p style="color: var(--muted); font-size: 0.75rem; margin-bottom: 8px;">Pasting an array [ { ... } ] replaces all games for this tab. Pasting a single { ... } adds one game:</p>
+        <textarea id="import-json-box" class="json-input" placeholder='Paste game JSON snippet here...'></textarea>
+        <button class="submit-btn" onclick="importJsonGames()">Import Game(s)</button>
       </div>
 
-      <!-- Manual Entry Form -->
+      <!-- Manual Log Form -->
       <div class="panel-box">
-        <div class="panel-title">Manual Game Entry</div>
+        <div class="panel-title">Log New Game (Current Tab)</div>
         <form id="game-form" onsubmit="handleFormSubmit(event)">
           <div class="form-grid">
             <div class="form-group"><label>Date</label><input type="date" id="g-date" required /></div>
-            <div class="form-group"><label>Game #</label><input type="number" id="g-num" placeholder="1" /></div>
-            <div class="form-group"><label>Opponent</label><input type="text" id="g-opp" placeholder="Career" required /></div>
+            <div class="form-group"><label>Opponent</label><input type="text" id="g-opp" placeholder="Opponent" required /></div>
             <div class="form-group">
               <label>Result</label>
               <select id="g-res"><option value="W">W</option><option value="L">L</option></select>
             </div>
-            <div class="form-group"><label>Score</label><input type="text" id="g-score" placeholder="60-50" /></div>
-            <div class="form-group"><label>Minutes</label><input type="number" id="g-min" placeholder="36" /></div>
-            <div class="form-group"><label>Points</label><input type="number" id="g-pts" placeholder="4" required /></div>
-            <div class="form-group"><label>2PM</label><input type="number" id="g-2pm" placeholder="1" /></div>
-            <div class="form-group"><label>2PA</label><input type="number" id="g-2pa" placeholder="1" /></div>
-            <div class="form-group"><label>3PM</label><input type="number" id="g-3pm" placeholder="0" /></div>
-            <div class="form-group"><label>3PA</label><input type="number" id="g-3pa" placeholder="0" /></div>
-            <div class="form-group"><label>FTM</label><input type="number" id="g-ftm" placeholder="2" /></div>
-            <div class="form-group"><label>FTA</label><input type="number" id="g-fta" placeholder="2" /></div>
-            <div class="form-group"><label>Shooting Fouls (Trips)</label><input type="number" id="g-fouls-drawn" placeholder="1" /></div>
-            <div class="form-group"><label>Rebounds</label><input type="number" id="g-reb" placeholder="3" /></div>
-            <div class="form-group"><label>Assists</label><input type="number" id="g-ast" placeholder="0" /></div>
-            <div class="form-group"><label>Stls</label><input type="number" id="g-stls" placeholder="2" /></div>
-            <div class="form-group"><label>FTO</label><input type="number" id="g-fto" placeholder="3" /></div>
-            <div class="form-group"><label>SAA</label><input type="number" id="g-saa" placeholder="0" /></div>
-            <div class="form-group"><label>SAM</label><input type="number" id="g-sam" placeholder="4" /></div>
-            <div class="form-group"><label>Drn Fls</label><input type="number" id="g-drnfls" placeholder="2" /></div>
-            <div class="form-group"><label>Fouls</label><input type="number" id="g-fouls" placeholder="0" /></div>
-            <div class="form-group"><label>+/-</label><input type="text" id="g-pm" placeholder="-14" /></div>
+            <div class="form-group"><label>Score</label><input type="text" id="g-score" placeholder="e.g. 51-38" /></div>
+            <div class="form-group"><label>MIN</label><input type="number" step="0.1" id="g-min" placeholder="Minutes" /></div>
+            <div class="form-group"><label>PTS</label><input type="number" id="g-pts" placeholder="Points" required /></div>
+            <div class="form-group"><label>REB</label><input type="number" id="g-reb" placeholder="Rebounds" /></div>
+            <div class="form-group"><label>AST</label><input type="number" id="g-ast" placeholder="Assists" /></div>
+            <div class="form-group"><label>STL</label><input type="number" id="g-stl" placeholder="Steals" /></div>
+            <div class="form-group"><label>FTO (Forced TO)</label><input type="number" id="g-fto" placeholder="FTO" /></div>
+            <div class="form-group"><label>2PM</label><input type="number" id="g-2pm" placeholder="2PM" /></div>
+            <div class="form-group"><label>2PA</label><input type="number" id="g-2pa" placeholder="2PA" /></div>
+            <div class="form-group"><label>3PM</label><input type="number" id="g-3pm" placeholder="3PM" /></div>
+            <div class="form-group"><label>3PA</label><input type="number" id="g-3pa" placeholder="3PA" /></div>
+            <div class="form-group"><label>FTM</label><input type="number" id="g-ftm" placeholder="FTM" /></div>
+            <div class="form-group"><label>FTA</label><input type="number" id="g-fta" placeholder="FTA" /></div>
+            <div class="form-group"><label>Shooting Fouls Drawn</label><input type="number" id="g-sfd" placeholder="Fouls Drawn" /></div>
+            <div class="form-group"><label>+/-</label><input type="text" id="g-pm" placeholder="+10 or -4" /></div>
           </div>
           <button type="submit" class="submit-btn">Save Game & Sync to Drive</button>
         </form>
@@ -164,46 +170,50 @@
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEyDw-vBWfWVNi3LoFnDdUYkS341YWqAzVNCSC2ghmOrJ-dxXInMgs982BRwLh1oi-qQ/exec";
 
-    let appData = {
+    let state = {
       playerName: "Cayden",
-      seasons: [
-        {
-          seasonName: "Waterbury Fall Duvon Nardelli",
-          games: []
-        }
-      ]
+      seasons: []
     };
-    let currentSeason = 0;
+    let activeSeasonIndex = 0;
 
-    async function loadDataFromDrive() {
+    async function loadData() {
       setStatus("Syncing from Drive...");
       try {
         const res = await fetch(GOOGLE_SCRIPT_URL);
         const data = await res.json();
-        if (data.seasons && data.seasons.length > 0) {
-          appData = data;
+        if (data && Array.isArray(data.seasons)) {
+          state = data;
+          localStorage.setItem('cayden_games_data', JSON.stringify(state));
+          setStatus("Synced with Drive");
+        } else {
+          fallbackLocal("Synced with Drive (Empty)");
         }
-        setStatus("Synced with Drive");
       } catch (err) {
-        console.warn("Using local session state.", err);
-        setStatus("Offline Mode");
+        fallbackLocal("Offline Mode");
       }
-      renderTabs();
-      renderActiveSeason(0);
+      render();
     }
 
-    async function syncToDrive() {
+    function fallbackLocal(msg) {
+      const local = localStorage.getItem('cayden_games_data');
+      if (local) {
+        try { state = JSON.parse(local); } catch(e){}
+      }
+      setStatus(msg);
+    }
+
+    async function saveData() {
+      localStorage.setItem('cayden_games_data', JSON.stringify(state));
       setStatus("Saving to Drive...");
       try {
         await fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(appData)
+          body: JSON.stringify(state)
         });
         setStatus("All changes saved to Drive");
       } catch (err) {
-        console.error(err);
         setStatus("Error saving to Drive");
       }
     }
@@ -212,199 +222,224 @@
       document.getElementById('sync-status').textContent = msg;
     }
 
-    function renderTabs() {
-      const bar = document.getElementById('tab-bar');
-      bar.innerHTML = '';
-      appData.seasons.forEach((season, idx) => {
-        const btn = document.createElement('button');
-        btn.className = `tab-btn ${idx === currentSeason ? 'active' : ''}`;
-        btn.textContent = season.seasonName;
-        btn.onclick = () => {
-          currentSeason = idx;
-          document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
-          renderActiveSeason(idx);
-        };
-        bar.appendChild(btn);
-      });
+    /* --- Tab Management Functions --- */
+    function renameCurrentTab() {
+      if (!state.seasons || state.seasons.length === 0) {
+        alert("No tabs available to rename.");
+        return;
+      }
+      const current = state.seasons[activeSeasonIndex];
+      const newName = prompt("Enter new name for tab:", current.seasonName);
+      if (newName && newName.trim() !== "") {
+        current.seasonName = newName.trim();
+        render();
+        saveData();
+      }
     }
 
-    function renderActiveSeason(index) {
-      const season = appData.seasons[index];
-      const games = season ? season.games || [] : [];
-      const tbody = document.getElementById('stats-body');
-      tbody.innerHTML = '';
+    function addNewTab() {
+      const tabName = prompt("Enter name for new season tab:");
+      if (tabName && tabName.trim() !== "") {
+        state.seasons.push({
+          seasonName: tabName.trim(),
+          games: []
+        });
+        activeSeasonIndex = state.seasons.length - 1;
+        render();
+        saveData();
+      }
+    }
 
-      if (games.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="20" class="empty-state">No games logged yet for this season/league.</td></tr>`;
+    function deleteCurrentTab() {
+      if (!state.seasons || state.seasons.length === 0) return;
+      const current = state.seasons[activeSeasonIndex];
+      if (confirm(`Delete the entire tab "${current.seasonName}" and all its games?`)) {
+        state.seasons.splice(activeSeasonIndex, 1);
+        if (activeSeasonIndex >= state.seasons.length) {
+          activeSeasonIndex = Math.max(0, state.seasons.length - 1);
+        }
+        render();
+        saveData();
+      }
+    }
+
+    function clearAllCache() {
+      if (confirm("Clear local storage cache and reload?")) {
+        localStorage.removeItem('cayden_games_data');
+        location.reload();
+      }
+    }
+
+    /* --- Game Management --- */
+    function deleteGame(gameIdx) {
+      if (confirm("Delete this game?")) {
+        state.seasons[activeSeasonIndex].games.splice(gameIdx, 1);
+        render();
+        saveData();
+      }
+    }
+
+    function render() {
+      const tabsList = document.getElementById('tabs-list');
+      tabsList.innerHTML = '';
+
+      if (!state.seasons || state.seasons.length === 0) {
+        document.getElementById('games-body').innerHTML = `<tr><td colspan="16" class="empty-state">No season tabs created yet. Click "➕ New Tab" to add one!</td></tr>`;
         document.getElementById('stats-summary').innerHTML = '';
         return;
       }
 
-      let t = {
-        games: games.length,
-        pts: 0, reb: 0, ast: 0, stls: 0, fto: 0, min: 0, plusMinus: 0,
-        twoPm: 0, twoPa: 0,
-        threePm: 0, threePa: 0,
-        ftm: 0, fta: 0,
-        drnFls: 0,
-        trueShots: 0,
-        gamesHitGoal: 0
-      };
+      if (activeSeasonIndex >= state.seasons.length) activeSeasonIndex = 0;
 
-      games.forEach(g => {
+      // Render Tabs
+      state.seasons.forEach((season, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn' + (idx === activeSeasonIndex ? ' active' : '');
+        btn.textContent = season.seasonName;
+        btn.onclick = () => {
+          activeSeasonIndex = idx;
+          render();
+        };
+        tabsList.appendChild(btn);
+      });
+
+      const currentSeason = state.seasons[activeSeasonIndex];
+      const games = currentSeason.games || [];
+      const tbody = document.getElementById('games-body');
+      tbody.innerHTML = '';
+
+      if (games.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="16" class="empty-state">No games logged in "${currentSeason.seasonName}".</td></tr>`;
+        document.getElementById('stats-summary').innerHTML = '';
+        return;
+      }
+
+      let totals = { pts: 0, reb: 0, ast: 0, stl: 0, fto: 0, trueShots: 0, fga: 0, fgm: 0, games: games.length, wins: 0 };
+
+      games.forEach((g, idx) => {
         const pts = Number(g.pts) || 0;
         const reb = Number(g.reb) || 0;
         const ast = Number(g.ast) || 0;
-        const stls = Number(g.stls) || 0;
+        const stl = Number(g.stls !== undefined ? g.stls : (g.stl || 0));
         const fto = Number(g.fto) || 0;
-        const min = Number(g.min) || 0;
         const twoPm = Number(g.twoPm) || 0;
         const twoPa = Number(g.twoPa) || 0;
         const threePm = Number(g.threePm) || 0;
         const threePa = Number(g.threePa) || 0;
         const ftm = Number(g.ftm) || 0;
         const fta = Number(g.fta) || 0;
-        const drnFls = Number(g.drnFls || g.drawnFouls) || 0;
-        const pm = Number(String(g.plusMinus || 0).replace('+', '')) || 0;
-        const trueShots = Number(g.trueShots) || 0;
+        const sfd = Number(g.shootingFoulsDrawn) || 0;
+        const trueShots = (twoPa + threePa + sfd);
 
-        t.pts += pts;
-        t.reb += reb;
-        t.ast += ast;
-        t.stls += stls;
-        t.fto += fto;
-        t.min += min;
-        t.twoPm += twoPm;
-        t.twoPa += twoPa;
-        t.threePm += threePm;
-        t.threePa += threePa;
-        t.ftm += ftm;
-        t.fta += fta;
-        t.drnFls += drnFls;
-        t.plusMinus += pm;
-        t.trueShots += trueShots;
-        if (trueShots >= 8) t.gamesHitGoal++;
+        totals.pts += pts;
+        totals.reb += reb;
+        totals.ast += ast;
+        totals.stl += stl;
+        totals.fto += fto;
+        totals.trueShots += trueShots;
+        totals.fgm += (twoPm + threePm);
+        totals.fga += (twoPa + threePa);
+        if (g.result === 'W') totals.wins++;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${g.date || '-'}</td>
-          <td>${g.gameNumber || '-'}</td>
-          <td><strong>${g.opponent || '-'}</strong></td>
-          <td class="${g.result === 'W' ? 'win' : g.result === 'L' ? 'loss' : ''}">${g.result || '-'}</td>
+          <td style="font-weight:600;">${g.opponent || '-'}</td>
+          <td style="color:${g.result === 'W' ? 'var(--green)' : 'var(--red)'}; font-weight:700;">${g.result || '-'}</td>
           <td>${g.score || '-'}</td>
-          <td>${min}</td>
-          <td><strong>${pts}</strong></td>
-          <td class="${trueShots >= 8 ? 'target-met' : ''}">${trueShots} / 8</td>
+          <td>${g.min || '-'}</td>
+          <td class="highlight">${pts}</td>
+          <td>${reb}</td>
+          <td>${ast}</td>
+          <td>${stl}</td>
+          <td>${fto}</td>
           <td>${twoPm}/${twoPa}</td>
           <td>${threePm}/${threePa}</td>
           <td>${ftm}/${fta}</td>
-          <td>${reb}</td>
-          <td>${ast}</td>
-          <td>${stls}</td>
-          <td>${fto}</td>
-          <td>${g.saa !== undefined ? g.saa : 0}</td>
-          <td>${g.sam !== undefined ? g.sam : 0}</td>
-          <td>${drnFls}</td>
-          <td>${g.fouls || 0}</td>
-          <td>${g.plusMinus || '0'}</td>
+          <td class="green">${trueShots}</td>
+          <td>${g.plusMinus || '-'}</td>
+          <td><button class="btn-del" onclick="deleteGame(${idx})">✕ Delete</button></td>
         `;
         tbody.appendChild(tr);
       });
 
-      const n = t.games;
-      const totalFgm = t.twoPm + t.threePm;
-      const totalFga = t.twoPa + t.threePa;
-      const fgPct = totalFga > 0 ? ((totalFgm / totalFga) * 100).toFixed(1) + '%' : '0.0%';
-      const twoPct = t.twoPa > 0 ? ((t.twoPm / t.twoPa) * 100).toFixed(1) + '%' : '0.0%';
-      const threePct = t.threePa > 0 ? ((t.threePm / t.threePa) * 100).toFixed(1) + '%' : '0.0%';
-      const ftPct = t.fta > 0 ? ((t.ftm / t.fta) * 100).toFixed(1) + '%' : '0.0%';
-      const goalRate = ((t.gamesHitGoal / n) * 100).toFixed(0) + '%';
+      const n = totals.games;
+      const fgPct = totals.fga > 0 ? ((totals.fgm / totals.fga) * 100).toFixed(1) + '%' : '0.0%';
 
       document.getElementById('stats-summary').innerHTML = `
-        <div class="stat-card"><div class="label">Games</div><div class="val">${n}</div></div>
-        <div class="stat-card"><div class="label">PPG</div><div class="val">${(t.pts / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">Assert/G</div><div class="val">${(t.trueShots / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">Goal (≥8) Rate</div><div class="val" style="color:var(--green)">${goalRate}</div></div>
+        <div class="stat-card"><div class="label">Record</div><div class="val">${totals.wins}-${n - totals.wins}</div></div>
+        <div class="stat-card"><div class="label">PPG</div><div class="val" style="color:var(--accent)">${(totals.pts / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">RPG</div><div class="val">${(totals.reb / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">APG</div><div class="val">${(totals.ast / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">SPG</div><div class="val">${(totals.stl / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">FTO/G</div><div class="val">${(totals.fto / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">FG%</div><div class="val">${fgPct}</div></div>
-        <div class="stat-card"><div class="label">2PT%</div><div class="val">${twoPct}</div></div>
-        <div class="stat-card"><div class="label">3PT%</div><div class="val">${threePct}</div></div>
-        <div class="stat-card"><div class="label">FT%</div><div class="val">${ftPct}</div></div>
-        <div class="stat-card"><div class="label">RPG</div><div class="val">${(t.reb / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">APG</div><div class="val">${(t.ast / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">SPG</div><div class="val">${(t.stls / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">FTO/G</div><div class="val">${(t.fto / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">MPG</div><div class="val">${(t.min / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">Avg +/-</div><div class="val">${(t.plusMinus / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">True Shots/G</div><div class="val" style="color:var(--green)">${(totals.trueShots / n).toFixed(1)}</div></div>
       `;
-    }
-
-    function addNewSeasonPrompt() {
-      const name = prompt("Enter the name of the new league or season:");
-      if (name && name.trim()) {
-        appData.seasons.push({ seasonName: name.trim(), games: [] });
-        currentSeason = appData.seasons.length - 1;
-        renderTabs();
-        renderActiveSeason(currentSeason);
-        syncToDrive();
-      }
     }
 
     function handleFormSubmit(e) {
       e.preventDefault();
+      if (!state.seasons || state.seasons.length === 0) {
+        alert("Please create a season tab first using '➕ New Tab'.");
+        return;
+      }
       const twoPa = Number(document.getElementById('g-2pa').value) || 0;
       const threePa = Number(document.getElementById('g-3pa').value) || 0;
-      const foulsDrawn = Number(document.getElementById('g-fouls-drawn').value) || 0;
+      const sfd = Number(document.getElementById('g-sfd').value) || 0;
 
       const newGame = {
         date: document.getElementById('g-date').value,
-        gameNumber: Number(document.getElementById('g-num').value) || 1,
         opponent: document.getElementById('g-opp').value,
         result: document.getElementById('g-res').value,
         score: document.getElementById('g-score').value,
         min: Number(document.getElementById('g-min').value) || 0,
         pts: Number(document.getElementById('g-pts').value) || 0,
+        reb: Number(document.getElementById('g-reb').value) || 0,
+        ast: Number(document.getElementById('g-ast').value) || 0,
+        stls: Number(document.getElementById('g-stl').value) || 0,
+        fto: Number(document.getElementById('g-fto').value) || 0,
         twoPm: Number(document.getElementById('g-2pm').value) || 0,
         twoPa: twoPa,
         threePm: Number(document.getElementById('g-3pm').value) || 0,
         threePa: threePa,
         ftm: Number(document.getElementById('g-ftm').value) || 0,
         fta: Number(document.getElementById('g-fta').value) || 0,
-        shootingFoulsDrawn: foulsDrawn,
-        trueShots: twoPa + threePa + foulsDrawn,
-        reb: Number(document.getElementById('g-reb').value) || 0,
-        ast: Number(document.getElementById('g-ast').value) || 0,
-        stls: Number(document.getElementById('g-stls').value) || 0,
-        fto: Number(document.getElementById('g-fto').value) || 0,
-        saa: Number(document.getElementById('g-saa').value) || 0,
-        sam: Number(document.getElementById('g-sam').value) || 0,
-        drnFls: Number(document.getElementById('g-drnfls').value) || 0,
-        fouls: Number(document.getElementById('g-fouls').value) || 0,
-        plusMinus: document.getElementById('g-pm').value || "0"
+        shootingFoulsDrawn: sfd,
+        trueShots: twoPa + threePa + sfd,
+        plusMinus: document.getElementById('g-pm').value
       };
 
-      appData.seasons[currentSeason].games.unshift(newGame);
-      renderActiveSeason(currentSeason);
-      syncToDrive();
+      state.seasons[activeSeasonIndex].games.unshift(newGame);
+      render();
+      saveData();
       e.target.reset();
     }
 
-    function importJsonGame() {
+    function importJsonGames() {
       const raw = document.getElementById('import-json-box').value.trim();
       if (!raw) return;
       try {
         const parsed = JSON.parse(raw);
-        const gamesToAdd = Array.isArray(parsed) ? parsed : [parsed];
-        gamesToAdd.forEach(g => appData.seasons[currentSeason].games.unshift(g));
-        renderActiveSeason(currentSeason);
-        syncToDrive();
+        if (!state.seasons || state.seasons.length === 0) {
+          state.seasons.push({ seasonName: "New Season", games: [] });
+          activeSeasonIndex = 0;
+        }
+        if (Array.isArray(parsed)) {
+          state.seasons[activeSeasonIndex].games = parsed;
+        } else {
+          state.seasons[activeSeasonIndex].games.unshift(parsed);
+        }
+        render();
+        saveData();
         document.getElementById('import-json-box').value = '';
-        alert("Game(s) successfully imported and synced to Drive!");
+        alert("Games successfully imported and synced to Drive!");
       } catch (err) {
-        alert("Invalid JSON format. Please paste the exact JSON snippet from chat.");
+        alert("Invalid JSON format.");
       }
     }
 
-    loadDataFromDrive();
+    loadData();
   </script>
 </body>
 </html>
