@@ -12,6 +12,7 @@
       --accent: #f97316;
       --green: #22c55e;
       --red: #ef4444;
+      --blue: #38bdf8;
       --text: #f8fafc;
       --muted: #94a3b8;
       --border: #1e293b;
@@ -19,12 +20,12 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 16px; }
-    .container { max-width: 1450px; margin: 0 auto; }
+    .container { max-width: 1550px; margin: 0 auto; }
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
     h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
     .status-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
 
-    /* Tabs & Tab Toolbar */
+    /* Tabs Bar */
     .tabs-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
     .tabs-list { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
     .tab-btn {
@@ -39,11 +40,13 @@
     .tool-btn:hover { color: #fff; border-color: var(--muted); }
     .tool-btn.danger:hover { color: var(--red); border-color: var(--red); }
 
-    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; margin-bottom: 18px; }
+    /* Summary Stat Cards */
+    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); gap: 8px; margin-bottom: 18px; }
     .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 6px; text-align: center; }
     .stat-card .val { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 2px; }
     .stat-card .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
 
+    /* Table Styling */
     .table-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; margin-bottom: 24px; }
     table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.78rem; white-space: nowrap; }
     th { background: var(--header-bg); color: var(--muted); padding: 10px 8px; font-weight: 600; border-bottom: 1px solid var(--border); }
@@ -55,6 +58,7 @@
     .btn-del:hover { background: var(--red); color: #fff; }
     .empty-state { padding: 30px; color: var(--muted); text-align: center; }
 
+    /* Panels & Form */
     .panels-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
     .panel-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
     .panel-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 10px; color: var(--text); }
@@ -85,7 +89,7 @@
       </div>
     </header>
 
-    <!-- Season Tabs Bar & Controls -->
+    <!-- Season Tabs Bar & Inline Tab Controls -->
     <div class="tabs-bar">
       <div class="tabs-list" id="tabs-list"></div>
       <div class="tab-controls">
@@ -95,10 +99,10 @@
       </div>
     </div>
 
-    <!-- Active Season Stat Summary Cards (Including 2PT%, 3PT%, FT%) -->
+    <!-- Active Season Stat Summary Cards -->
     <div class="stats-summary" id="stats-summary"></div>
 
-    <!-- Games Table (Including Fouls & Drn Fls) -->
+    <!-- Games Table -->
     <div class="table-box">
       <table>
         <thead>
@@ -226,7 +230,7 @@
       document.getElementById('sync-status').textContent = msg;
     }
 
-    /* --- Tab Management --- */
+    /* --- Tab Management Functions --- */
     function renameCurrentTab() {
       if (!state.seasons || state.seasons.length === 0) {
         alert("No tabs available to rename.");
@@ -319,12 +323,13 @@
       }
 
       let totals = {
-        pts: 0, reb: 0, ast: 0, stl: 0, fto: 0, fouls: 0, drnFls: 0,
+        min: 0, pts: 0, reb: 0, ast: 0, stl: 0, fto: 0, fouls: 0, drnFls: 0,
         twoPm: 0, twoPa: 0, threePm: 0, threePa: 0, ftm: 0, fta: 0,
-        trueShots: 0, fgm: 0, fga: 0, games: games.length, wins: 0
+        trueShots: 0, fgm: 0, fga: 0, plusMinusSum: 0, games: games.length, wins: 0
       };
 
       games.forEach((g, idx) => {
+        const minutes = Number(g.min) || 0;
         const pts = Number(g.pts) || 0;
         const reb = Number(g.reb) || 0;
         const ast = Number(g.ast) || 0;
@@ -341,6 +346,12 @@
         const sfd = Number(g.shootingFoulsDrawn) || 0;
         const trueShots = (twoPa + threePa + sfd);
 
+        let pmVal = 0;
+        if (g.plusMinus !== undefined && g.plusMinus !== null && g.plusMinus !== '') {
+          pmVal = parseFloat(String(g.plusMinus).replace('+', '')) || 0;
+        }
+
+        totals.min += minutes;
         totals.pts += pts;
         totals.reb += reb;
         totals.ast += ast;
@@ -357,6 +368,7 @@
         totals.fgm += (twoPm + threePm);
         totals.fga += (twoPa + threePa);
         totals.trueShots += trueShots;
+        totals.plusMinusSum += pmVal;
         if (g.result === 'W') totals.wins++;
 
         const tr = document.createElement('tr');
@@ -388,20 +400,29 @@
       const twoPct = totals.twoPa > 0 ? ((totals.twoPm / totals.twoPa) * 100).toFixed(1) + '%' : '0.0%';
       const threePct = totals.threePa > 0 ? ((totals.threePm / totals.threePa) * 100).toFixed(1) + '%' : '0.0%';
       const ftPct = totals.fta > 0 ? ((totals.ftm / totals.fta) * 100).toFixed(1) + '%' : '0.0%';
+      
+      const avgMin = (totals.min / n).toFixed(1);
+      const avgPm = (totals.plusMinusSum / n);
+      const avgPmStr = (avgPm > 0 ? '+' : '') + avgPm.toFixed(1);
 
       document.getElementById('stats-summary').innerHTML = `
         <div class="stat-card"><div class="label">Record</div><div class="val">${totals.wins}-${n - totals.wins}</div></div>
-        <div class="stat-card"><div class="label">PPG</div><div class="val" style="color:var(--accent)">${(totals.pts / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">Total PTS</div><div class="val" style="color:var(--accent)">${totals.pts}</div></div>
+        <div class="stat-card"><div class="label">PPG</div><div class="val">${(totals.pts / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">Avg MIN</div><div class="val">${avgMin}</div></div>
+        <div class="stat-card"><div class="label">Total STL</div><div class="val" style="color:var(--blue)">${totals.stl}</div></div>
+        <div class="stat-card"><div class="label">SPG</div><div class="val">${(totals.stl / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">Total FTO</div><div class="val" style="color:var(--blue)">${totals.fto}</div></div>
+        <div class="stat-card"><div class="label">FTO/G</div><div class="val">${(totals.fto / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">RPG</div><div class="val">${(totals.reb / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">APG</div><div class="val">${(totals.ast / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">SPG</div><div class="val">${(totals.stl / n).toFixed(1)}</div></div>
-        <div class="stat-card"><div class="label">FTO/G</div><div class="val">${(totals.fto / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">Fouls/G</div><div class="val">${(totals.fouls / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">DrnFls/G</div><div class="val">${(totals.drnFls / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">FG%</div><div class="val">${fgPct}</div></div>
         <div class="stat-card"><div class="label">2PT%</div><div class="val">${twoPct}</div></div>
         <div class="stat-card"><div class="label">3PT%</div><div class="val">${threePct}</div></div>
         <div class="stat-card"><div class="label">FT%</div><div class="val" style="color:var(--green)">${ftPct}</div></div>
+        <div class="stat-card"><div class="label">Avg +/-</div><div class="val" style="color:${avgPm >= 0 ? 'var(--green)' : 'var(--red)'}">${avgPmStr}</div></div>
         <div class="stat-card"><div class="label">True Shots/G</div><div class="val" style="color:var(--accent)">${(totals.trueShots / n).toFixed(1)}</div></div>
       `;
     }
