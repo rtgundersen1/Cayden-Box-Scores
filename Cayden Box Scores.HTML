@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cayden's Basketball Hub</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: #131c2e;
+      --card-hover: #182338;
+      --accent: #f97316;
+      --green: #22c55e;
+      --red: #ef4444;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #1e293b;
+      --header-bg: #0f172a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 18px; }
+    .container { max-width: 1300px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+    .status-badge { font-size: 0.75rem; padding: 5px 10px; border-radius: 6px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
+    
+    .tabs-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px; overflow-x: auto; }
+    .tab-btn {
+      background: var(--card); border: 1px solid var(--border); color: var(--muted);
+      font-size: 0.85rem; font-weight: 600; padding: 8px 16px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+    .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-new-tab { background: #1e293b; border: 1px dashed var(--muted); color: var(--text); padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+    .btn-new-tab:hover { border-color: var(--accent); color: var(--accent); }
+
+    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 8px; text-align: center; }
+    .stat-card .val { font-size: 1.4rem; font-weight: 700; color: #fff; margin-top: 2px; }
+    .stat-card .label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+
+    .table-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.82rem; white-space: nowrap; }
+    th { background: var(--header-bg); color: var(--muted); padding: 11px 8px; font-weight: 600; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+    tr:hover { background: var(--card-hover); }
+    .target-met { color: var(--green); font-weight: 700; }
+    .win { color: var(--green); font-weight: 600; }
+    .loss { color: var(--red); font-weight: 600; }
+    .empty-state { padding: 36px 16px; color: var(--muted); text-align: center; }
+    
+    .panel-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 20px; }
+    .panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+    .form-group label { display: block; font-size: 0.7rem; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; font-weight: 600; }
+    .form-group input, .form-group select {
+      width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 6px; font-size: 0.85rem; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    .submit-btn {
+      margin-top: 16px; background: var(--accent); border: none; color: #fff; padding: 10px 22px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+    }
+    .submit-btn:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Cayden's Box Scores</h1>
+        <p style="color: var(--muted); font-size: 0.8rem; margin-top: 2px;">Shot Assertiveness (≥8 Target) & Season Log</p>
+      </div>
+      <span class="status-badge" id="sync-status">Connecting...</span>
+    </header>
+
+    <div class="tabs-wrapper">
+      <div id="tab-bar" style="display: flex; gap: 8px;"></div>
+      <button class="btn-new-tab" onclick="addNewSeasonPrompt()">+ New League/Season</button>
+    </div>
+
+    <div class="stats-summary" id="stats-summary"></div>
+
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Opponent</th>
+            <th>W/L</th>
+            <th>Score</th>
+            <th>MIN</th>
+            <th>PTS</th>
+            <th>Aggression (≥8 Goal)</th>
+            <th>2PT</th>
+            <th>3PT</th>
+            <th>FT</th>
+            <th>REB</th>
+            <th>AST</th>
+            <th>+/-</th>
+          </tr>
+        </thead>
+        <tbody id="stats-body"></tbody>
+      </table>
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">Add Game to Current Tab</div>
+      <form id="game-form" onsubmit="handleFormSubmit(event)">
+        <div class="form-grid">
+          <div class="form-group"><label>Date</label><input type="date" id="g-date" required /></div>
+          <div class="form-group"><label>Opponent</label><input type="text" id="g-opp" placeholder="e.g. Torrington" required /></div>
+          <div class="form-group">
+            <label>Result</label>
+            <select id="g-res"><option value="W">W</option><option value="L">L</option></select>
+          </div>
+          <div class="form-group"><label>Score</label><input type="text" id="g-score" placeholder="62-58" /></div>
+          <div class="form-group"><label>Minutes</label><input type="number" id="g-min" placeholder="24" /></div>
+          <div class="form-group"><label>Points</label><input type="number" id="g-pts" placeholder="14" required /></div>
+          <div class="form-group"><label>2PM / 2PA</label><input type="text" id="g-2p" placeholder="3/6" /></div>
+          <div class="form-group"><label>3PM / 3PA</label><input type="text" id="g-3p" placeholder="1/3" /></div>
+          <div class="form-group"><label>FTM / FTA</label><input type="text" id="g-ft" placeholder="2/2" /></div>
+          <div class="form-group"><label>Shooting Fouls Drawn</label><input type="number" id="g-fouls" placeholder="2" /></div>
+          <div class="form-group"><label>Rebounds</label><input type="number" id="g-reb" placeholder="5" /></div>
+          <div class="form-group"><label>Assists</label><input type="number" id="g-ast" placeholder="4" /></div>
+          <div class="form-group"><label>+/-</label><input type="text" id="g-pm" placeholder="+6" /></div>
+        </div>
+        <button type="submit" class="submit-btn">Save Game & Sync to Drive</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEyDw-vBWfWVNi3LoFnDdUYkS341YWqAzVNCSC2ghmOrJ-dxXInMgs982BRwLh1oi-qQ/exec";
+
+    let appData = {
+      playerName: "Cayden",
+      seasons: [
+        {
+          seasonName: "Waterbury Fall Duvon Nardelli",
+          games: []
+        }
+      ]
+    };
+    let currentSeason = 0;
+
+    async function loadDataFromDrive() {
+      setStatus("Syncing from Drive...");
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL);
+        const data = await res.json();
+        if (data.seasons && data.seasons.length > 0) {
+          appData = data;
+        }
+        setStatus("Synced with Drive");
+      } catch (err) {
+        console.warn("Could not reach Drive endpoint, running locally.", err);
+        setStatus("Offline Mode");
+      }
+      renderTabs();
+      renderActiveSeason(0);
+    }
+
+    async function syncToDrive() {
+      setStatus("Saving to Drive...");
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(appData)
+        });
+        setStatus("All changes saved to Drive");
+      } catch (err) {
+        console.error("Failed to sync to Drive:", err);
+        setStatus("Error saving to Drive");
+      }
+    }
+
+    function setStatus(msg) {
+      document.getElementById('sync-status').textContent = msg;
+    }
+
+    function renderTabs() {
+      const bar = document.getElementById('tab-bar');
+      bar.innerHTML = '';
+      appData.seasons.forEach((season, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${idx === currentSeason ? 'active' : ''}`;
+        btn.textContent = season.seasonName;
+        btn.onclick = () => {
+          currentSeason = idx;
+          document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+          renderActiveSeason(idx);
+        };
+        bar.appendChild(btn);
+      });
+    }
+
+    function renderActiveSeason(index) {
+      const season = appData.seasons[index];
+      const games = season ? season.games || [] : [];
+      const tbody = document.getElementById('stats-body');
+      tbody.innerHTML = '';
+
+      if (games.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="13" class="empty-state">No games logged yet for this season/league.</td></tr>`;
+        document.getElementById('stats-summary').innerHTML = '';
+        return;
+      }
+
+      let totals = { pts: 0, reb: 0, ast: 0, trueShots: 0, games: games.length };
+
+      games.forEach(g => {
+        const pts = Number(g.pts) || 0;
+        const reb = Number(g.reb) || 0;
+        const ast = Number(g.ast) || 0;
+        const trueShots = Number(g.trueShots) || 0;
+
+        totals.pts += pts;
+        totals.reb += reb;
+        totals.ast += ast;
+        totals.trueShots += trueShots;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${g.date || '-'}</td>
+          <td><strong>${g.opponent || '-'}</strong></td>
+          <td class="${g.result === 'W' ? 'win' : g.result === 'L' ? 'loss' : ''}">${g.result || '-'}</td>
+          <td>${g.score || '-'}</td>
+          <td>${g.min || '-'}</td>
+          <td><strong>${pts}</strong></td>
+          <td class="${trueShots >= 8 ? 'target-met' : ''}">${trueShots} / 8</td>
+          <td>${g.twoPt || '0/0'}</td>
+          <td>${g.threePt || '0/0'}</td>
+          <td>${g.ft || '0/0'}</td>
+          <td>${reb}</td>
+          <td>${ast}</td>
+          <td>${g.plusMinus || '0'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const n = totals.games || 1;
+      document.getElementById('stats-summary').innerHTML = `
+        <div class="stat-card"><div class="label">PPG</div><div class="val">${(totals.pts / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">Aggression/G</div><div class="val">${(totals.trueShots / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">RPG</div><div class="val">${(totals.reb / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">APG</div><div class="val">${(totals.ast / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">Games</div><div class="val">${totals.games}</div></div>
+      `;
+    }
+
+    function addNewSeasonPrompt() {
+      const name = prompt("Enter the name of the new league or season:");
+      if (name && name.trim()) {
+        appData.seasons.push({ seasonName: name.trim(), games: [] });
+        currentSeason = appData.seasons.length - 1;
+        renderTabs();
+        renderActiveSeason(currentSeason);
+        syncToDrive();
+      }
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const parseAttempts = (str) => Number((str || '').split('/')[1]) || 0;
+      const twoPa = parseAttempts(document.getElementById('g-2p').value);
+      const threePa = parseAttempts(document.getElementById('g-3p').value);
+      const shootingFouls = Number(document.getElementById('g-fouls').value) || 0;
+      const trueShots = twoPa + threePa + shootingFouls;
+
+      const newGame = {
+        date: document.getElementById('g-date').value,
+        opponent: document.getElementById('g-opp').value,
+        result: document.getElementById('g-res').value,
+        score: document.getElementById('g-score').value,
+        min: Number(document.getElementById('g-min').value) || 0,
+        pts: Number(document.getElementById('g-pts').value) || 0,
+        twoPt: document.getElementById('g-2p').value || "0/0",
+        threePt: document.getElementById('g-3p').value || "0/0",
+        ft: document.getElementById('g-ft').value || "0/0",
+        reb: Number(document.getElementById('g-reb').value) || 0,
+        ast: Number(document.getElementById('g-ast').value) || 0,
+        plusMinus: document.getElementById('g-pm').value || "0",
+        shootingFoulsDrawn: shootingFouls,
+        trueShots: trueShots
+      };
+
+      appData.seasons[currentSeason].games.unshift(newGame);
+      renderActiveSeason(currentSeason);
+      syncToDrive();
+      e.target.reset();
+    }
+
+    loadDataFromDrive();
+  </script>
+</body>
+</html>
