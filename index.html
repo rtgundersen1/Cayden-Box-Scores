@@ -19,7 +19,7 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 16px; }
-    .container { max-width: 1400px; margin: 0 auto; }
+    .container { max-width: 1450px; margin: 0 auto; }
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
     h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
     .status-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
@@ -39,9 +39,9 @@
     .tool-btn:hover { color: #fff; border-color: var(--muted); }
     .tool-btn.danger:hover { color: var(--red); border-color: var(--red); }
 
-    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 18px; }
+    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; margin-bottom: 18px; }
     .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 6px; text-align: center; }
-    .stat-card .val { font-size: 1.25rem; font-weight: 700; color: #fff; margin-top: 2px; }
+    .stat-card .val { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 2px; }
     .stat-card .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
 
     .table-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; margin-bottom: 24px; }
@@ -85,7 +85,7 @@
       </div>
     </header>
 
-    <!-- Season Tabs Bar & Inline Tab Controls -->
+    <!-- Season Tabs Bar & Controls -->
     <div class="tabs-bar">
       <div class="tabs-list" id="tabs-list"></div>
       <div class="tab-controls">
@@ -95,10 +95,10 @@
       </div>
     </div>
 
-    <!-- Active Season Stat Summary Cards -->
+    <!-- Active Season Stat Summary Cards (Including 2PT%, 3PT%, FT%) -->
     <div class="stats-summary" id="stats-summary"></div>
 
-    <!-- Games Table -->
+    <!-- Games Table (Including Fouls & Drn Fls) -->
     <div class="table-box">
       <table>
         <thead>
@@ -113,6 +113,8 @@
             <th>AST</th>
             <th>STL</th>
             <th>FTO</th>
+            <th>Fouls</th>
+            <th>Drn Fls</th>
             <th>2PM-A</th>
             <th>3PM-A</th>
             <th>FTM-A</th>
@@ -146,19 +148,21 @@
               <select id="g-res"><option value="W">W</option><option value="L">L</option></select>
             </div>
             <div class="form-group"><label>Score</label><input type="text" id="g-score" placeholder="e.g. 51-38" /></div>
-            <div class="form-group"><label>MIN</label><input type="number" step="0.1" id="g-min" placeholder="Minutes" /></div>
+            <div class="form-group"><label>MIN</label><input type="number" step="0.01" id="g-min" placeholder="Minutes" /></div>
             <div class="form-group"><label>PTS</label><input type="number" id="g-pts" placeholder="Points" required /></div>
             <div class="form-group"><label>REB</label><input type="number" id="g-reb" placeholder="Rebounds" /></div>
             <div class="form-group"><label>AST</label><input type="number" id="g-ast" placeholder="Assists" /></div>
             <div class="form-group"><label>STL</label><input type="number" id="g-stl" placeholder="Steals" /></div>
             <div class="form-group"><label>FTO (Forced TO)</label><input type="number" id="g-fto" placeholder="FTO" /></div>
+            <div class="form-group"><label>Fouls</label><input type="number" id="g-fouls" placeholder="PF" /></div>
+            <div class="form-group"><label>Drawn Fouls</label><input type="number" id="g-drnfls" placeholder="Drawn Fouls" /></div>
             <div class="form-group"><label>2PM</label><input type="number" id="g-2pm" placeholder="2PM" /></div>
             <div class="form-group"><label>2PA</label><input type="number" id="g-2pa" placeholder="2PA" /></div>
             <div class="form-group"><label>3PM</label><input type="number" id="g-3pm" placeholder="3PM" /></div>
             <div class="form-group"><label>3PA</label><input type="number" id="g-3pa" placeholder="3PA" /></div>
             <div class="form-group"><label>FTM</label><input type="number" id="g-ftm" placeholder="FTM" /></div>
             <div class="form-group"><label>FTA</label><input type="number" id="g-fta" placeholder="FTA" /></div>
-            <div class="form-group"><label>Shooting Fouls Drawn</label><input type="number" id="g-sfd" placeholder="Fouls Drawn" /></div>
+            <div class="form-group"><label>Shooting Fouls Drawn</label><input type="number" id="g-sfd" placeholder="Shooting Fouls" /></div>
             <div class="form-group"><label>+/-</label><input type="text" id="g-pm" placeholder="+10 or -4" /></div>
           </div>
           <button type="submit" class="submit-btn">Save Game & Sync to Drive</button>
@@ -222,7 +226,7 @@
       document.getElementById('sync-status').textContent = msg;
     }
 
-    /* --- Tab Management Functions --- */
+    /* --- Tab Management --- */
     function renameCurrentTab() {
       if (!state.seasons || state.seasons.length === 0) {
         alert("No tabs available to rename.");
@@ -284,7 +288,7 @@
       tabsList.innerHTML = '';
 
       if (!state.seasons || state.seasons.length === 0) {
-        document.getElementById('games-body').innerHTML = `<tr><td colspan="16" class="empty-state">No season tabs created yet. Click "➕ New Tab" to add one!</td></tr>`;
+        document.getElementById('games-body').innerHTML = `<tr><td colspan="18" class="empty-state">No season tabs created yet. Click "➕ New Tab" to add one!</td></tr>`;
         document.getElementById('stats-summary').innerHTML = '';
         return;
       }
@@ -309,12 +313,16 @@
       tbody.innerHTML = '';
 
       if (games.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="16" class="empty-state">No games logged in "${currentSeason.seasonName}".</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="18" class="empty-state">No games logged in "${currentSeason.seasonName}".</td></tr>`;
         document.getElementById('stats-summary').innerHTML = '';
         return;
       }
 
-      let totals = { pts: 0, reb: 0, ast: 0, stl: 0, fto: 0, trueShots: 0, fga: 0, fgm: 0, games: games.length, wins: 0 };
+      let totals = {
+        pts: 0, reb: 0, ast: 0, stl: 0, fto: 0, fouls: 0, drnFls: 0,
+        twoPm: 0, twoPa: 0, threePm: 0, threePa: 0, ftm: 0, fta: 0,
+        trueShots: 0, fgm: 0, fga: 0, games: games.length, wins: 0
+      };
 
       games.forEach((g, idx) => {
         const pts = Number(g.pts) || 0;
@@ -322,6 +330,8 @@
         const ast = Number(g.ast) || 0;
         const stl = Number(g.stls !== undefined ? g.stls : (g.stl || 0));
         const fto = Number(g.fto) || 0;
+        const fouls = Number(g.fouls) || 0;
+        const drnFls = Number(g.drnFls !== undefined ? g.drnFls : (g.drawnFouls || 0));
         const twoPm = Number(g.twoPm) || 0;
         const twoPa = Number(g.twoPa) || 0;
         const threePm = Number(g.threePm) || 0;
@@ -336,9 +346,17 @@
         totals.ast += ast;
         totals.stl += stl;
         totals.fto += fto;
-        totals.trueShots += trueShots;
+        totals.fouls += fouls;
+        totals.drnFls += drnFls;
+        totals.twoPm += twoPm;
+        totals.twoPa += twoPa;
+        totals.threePm += threePm;
+        totals.threePa += threePa;
+        totals.ftm += ftm;
+        totals.fta += fta;
         totals.fgm += (twoPm + threePm);
         totals.fga += (twoPa + threePa);
+        totals.trueShots += trueShots;
         if (g.result === 'W') totals.wins++;
 
         const tr = document.createElement('tr');
@@ -347,12 +365,14 @@
           <td style="font-weight:600;">${g.opponent || '-'}</td>
           <td style="color:${g.result === 'W' ? 'var(--green)' : 'var(--red)'}; font-weight:700;">${g.result || '-'}</td>
           <td>${g.score || '-'}</td>
-          <td>${g.min || '-'}</td>
+          <td>${g.min !== undefined ? g.min : '-'}</td>
           <td class="highlight">${pts}</td>
           <td>${reb}</td>
           <td>${ast}</td>
           <td>${stl}</td>
           <td>${fto}</td>
+          <td>${fouls}</td>
+          <td>${drnFls}</td>
           <td>${twoPm}/${twoPa}</td>
           <td>${threePm}/${threePa}</td>
           <td>${ftm}/${fta}</td>
@@ -365,6 +385,9 @@
 
       const n = totals.games;
       const fgPct = totals.fga > 0 ? ((totals.fgm / totals.fga) * 100).toFixed(1) + '%' : '0.0%';
+      const twoPct = totals.twoPa > 0 ? ((totals.twoPm / totals.twoPa) * 100).toFixed(1) + '%' : '0.0%';
+      const threePct = totals.threePa > 0 ? ((totals.threePm / totals.threePa) * 100).toFixed(1) + '%' : '0.0%';
+      const ftPct = totals.fta > 0 ? ((totals.ftm / totals.fta) * 100).toFixed(1) + '%' : '0.0%';
 
       document.getElementById('stats-summary').innerHTML = `
         <div class="stat-card"><div class="label">Record</div><div class="val">${totals.wins}-${n - totals.wins}</div></div>
@@ -373,8 +396,13 @@
         <div class="stat-card"><div class="label">APG</div><div class="val">${(totals.ast / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">SPG</div><div class="val">${(totals.stl / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">FTO/G</div><div class="val">${(totals.fto / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">Fouls/G</div><div class="val">${(totals.fouls / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">DrnFls/G</div><div class="val">${(totals.drnFls / n).toFixed(1)}</div></div>
         <div class="stat-card"><div class="label">FG%</div><div class="val">${fgPct}</div></div>
-        <div class="stat-card"><div class="label">True Shots/G</div><div class="val" style="color:var(--green)">${(totals.trueShots / n).toFixed(1)}</div></div>
+        <div class="stat-card"><div class="label">2PT%</div><div class="val">${twoPct}</div></div>
+        <div class="stat-card"><div class="label">3PT%</div><div class="val">${threePct}</div></div>
+        <div class="stat-card"><div class="label">FT%</div><div class="val" style="color:var(--green)">${ftPct}</div></div>
+        <div class="stat-card"><div class="label">True Shots/G</div><div class="val" style="color:var(--accent)">${(totals.trueShots / n).toFixed(1)}</div></div>
       `;
     }
 
@@ -399,6 +427,8 @@
         ast: Number(document.getElementById('g-ast').value) || 0,
         stls: Number(document.getElementById('g-stl').value) || 0,
         fto: Number(document.getElementById('g-fto').value) || 0,
+        fouls: Number(document.getElementById('g-fouls').value) || 0,
+        drnFls: Number(document.getElementById('g-drnfls').value) || 0,
         twoPm: Number(document.getElementById('g-2pm').value) || 0,
         twoPa: twoPa,
         threePm: Number(document.getElementById('g-3pm').value) || 0,
